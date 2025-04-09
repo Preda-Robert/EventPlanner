@@ -686,7 +686,7 @@ $.extend( $.validator, {
 		},
 
 		clean: function( selector ) {
-			return $( selector )[ 0 ];
+			return $.find(selector)[0];
 		},
 
 		errors: function() {
@@ -1083,7 +1083,7 @@ $.extend( $.validator, {
 			}
 
 			// Always apply ignore filter
-			return $( element ).not( this.settings.ignore )[ 0 ];
+			return $.find(element).not(this.settings.ignore)[0];
 		},
 
 		checkable: function( element ) {
