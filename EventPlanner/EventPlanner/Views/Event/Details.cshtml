@@ -1,0 +1,11 @@
+﻿@model EventPlanner.Models.Event
+
+<h2>Event Details</h2>
+
+<div>
+    <h4>@Model.Title</h4>
+    <p><strong>Date:</strong> @Model.Date.ToShortDateString()</p>
+    <p><strong>Description:</strong> @Model.Description</p>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>

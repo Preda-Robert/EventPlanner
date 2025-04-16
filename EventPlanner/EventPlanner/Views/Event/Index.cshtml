@@ -1,0 +1,28 @@
+﻿@model IEnumerable<EventPlanner.Models.Event>
+
+<h2>Events</h2>
+<a asp-action="Create" class="btn btn-primary">Create New Event</a>
+
+<table class="table mt-3">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Date</th>
+      <th>Description</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var ev in Model)
+    {
+      <tr>
+        <td>@ev.Title</td>
+        <td>@ev.Date.ToShortDateString()</td>
+        <td>@ev.Description</td>
+        <td>
+          <a asp-action="Details" asp-route-id="@ev.EventId" class="btn btn-sm btn-info">Details</a>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
