@@ -1,0 +1,12 @@
+﻿@model EventPlanner.Models.Host
+
+<h2>Delete Host</h2>
+
+<div>
+  <p>Are you sure you want to delete the host <strong>@Model.Name</strong>?</p>
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+  <button type="submit" class="btn btn-danger">Yes, Delete</button>
+  <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

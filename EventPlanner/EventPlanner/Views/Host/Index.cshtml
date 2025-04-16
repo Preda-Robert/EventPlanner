@@ -1,0 +1,29 @@
+﻿@model IEnumerable<EventPlanner.Models.Host>
+
+<h2>Hosts</h2>
+
+<a href="@Url.Action("Create")" class="btn btn-primary">Create New Host</a>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var host in Model)
+    {
+      <tr>
+        <td>@host.Name</td>
+        <td>@host.Email</td>
+        <td>
+          <a href="@Url.Action("Details", new { id = host.HostId })" class="btn btn-info">Details</a>
+          <a href="@Url.Action("Edit", new { id = host.HostId })" class="btn btn-warning">Edit</a>
+          <a href="@Url.Action("Delete", new { id = host.HostId })" class="btn btn-danger">Delete</a>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>

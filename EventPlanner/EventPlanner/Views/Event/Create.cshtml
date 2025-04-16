@@ -1,0 +1,33 @@
+﻿@model EventPlanner.Models.Event
+
+<h2>Create Event</h2>
+
+<form asp-action="Create" method="post">
+  <div class="form-group">
+    <label asp-for="Title"></label>
+    <input asp-for="Title" class="form-control" />
+    <span asp-validation-for="Title" class="text-danger"></span>
+  </div>
+
+  <div class="form-group">
+    <label asp-for="Date"></label>
+    <input asp-for="Date" class="form-control" type="date" />
+    <span asp-validation-for="Date" class="text-danger"></span>
+  </div>
+
+  <div class="form-group">
+    <label asp-for="Description"></label>
+    <textarea asp-for="Description" class="form-control"></textarea>
+    <span asp-validation-for="Description" class="text-danger"></span>
+  </div>
+
+  <div class="form-group">
+    <label asp-for="HostId">Host</label>
+    <select asp-for="HostId" class="form-control" asp-items="ViewBag.Hosts">
+      <option value="">Select a Host</option>
+    </select>
+    <span asp-validation-for="HostId" class="text-danger"></span>
+  </div>
+
+  <button type="submit" class="btn btn-success">Create</button>
+</form>
