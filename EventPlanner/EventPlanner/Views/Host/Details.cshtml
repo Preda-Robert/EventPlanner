@@ -1,0 +1,16 @@
+﻿@model EventPlanner.Models.Host
+
+<h2>Host Details</h2>
+<p><strong>Name:</strong> @Model.Name</p>
+<p><strong>Contact Info:</strong> @Model.ContactInfo</p>
+
+<h4>Hosted Events</h4>
+<ul>
+  @foreach (var ev in Model.EventsHosted ?? Enumerable.Empty<EventPlanner.Models.Event>())
+  {
+    <li>@ev.Title (@ev.Date.ToShortDateString())</li>
+  }
+</ul>
+
+<a asp-action="Edit" asp-route-id="@Model.HostId" class="btn btn-warning">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back</a>

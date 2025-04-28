@@ -1,0 +1,14 @@
+﻿@model EventPlanner.Models.Comment
+
+<h2>Delete Comment</h2>
+<h4>Are you sure you want to delete this?</h4>
+<div>
+  <p><strong>Content:</strong> @Model.Content</p>
+  <p><strong>Event ID:</strong> @Model.EventId</p>
+  <p><strong>User ID:</strong> @Model.UserId</p>
+</div>
+<form asp-action="Delete">
+  <input type="hidden" asp-for="CommentId" />
+  <button type="submit" class="btn btn-danger">Delete</button>
+  <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

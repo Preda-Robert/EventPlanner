@@ -1,0 +1,29 @@
+﻿@model EventPlanner.Models.Registration
+
+@{
+  ViewData["Title"] = "Delete Registration";
+}
+
+<h2>Delete Registration</h2>
+
+<h4>Are you sure you want to delete this registration?</h4>
+
+<dl class="row">
+  <dt class="col-sm-3">User</dt>
+  <dd class="col-sm-9">@Model.User?.UserName</dd>
+
+  <dt class="col-sm-3">Event</dt>
+  <dd class="col-sm-9">@Model.Event?.Title</dd>
+
+  <dt class="col-sm-3">Date</dt>
+  <dd class="col-sm-9">@Model.RegistrationDate.ToShortDateString()</dd>
+
+  <dt class="col-sm-3">Confirmed</dt>
+  <dd class="col-sm-9">@Model.IsConfirmed</dd>
+</dl>
+
+<form asp-action="Delete">
+  <input type="hidden" asp-for="RegistrationId" />
+  <button type="submit" class="btn btn-danger">Delete</button>
+  <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

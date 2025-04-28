@@ -1,0 +1,11 @@
+﻿@model EventPlanner.Models.Comment
+
+<h2>Comment Details</h2>
+<div>
+  <p><strong>Content:</strong> @Model.Content</p>
+  <p><strong>Created At:</strong> @Model.CreatedAt</p>
+  <p><strong>Event ID:</strong> @Model.EventId</p>
+  <p><strong>User ID:</strong> @Model.UserId</p>
+</div>
+<a asp-action="Edit" asp-route-id="@Model.CommentId" class="btn btn-warning">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>
