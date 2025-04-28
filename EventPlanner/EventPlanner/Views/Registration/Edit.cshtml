@@ -1,0 +1,34 @@
+﻿@model EventPlanner.Models.Registration
+
+@{
+  ViewData["Title"] = "Edit Registration";
+}
+
+<h2>Edit Registration</h2>
+
+<form asp-action="Edit">
+  <input type="hidden" asp-for="RegistrationId" />
+
+  <div class="form-group">
+    <label asp-for="UserId"></label>
+    <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
+  </div>
+
+  <div class="form-group">
+    <label asp-for="EventId"></label>
+    <select asp-for="EventId" class="form-control" asp-items="ViewBag.EventId"></select>
+  </div>
+
+  <div class="form-group">
+    <label asp-for="RegistrationDate"></label>
+    <input asp-for="RegistrationDate" class="form-control" type="date" />
+  </div>
+
+  <div class="form-check mt-2">
+    <input asp-for="IsConfirmed" class="form-check-input" />
+    <label asp-for="IsConfirmed" class="form-check-label"></label>
+  </div>
+
+  <button type="submit" class="btn btn-primary mt-3">Save</button>
+  <a asp-action="Index" class="btn btn-secondary mt-3">Cancel</a>
+</form>

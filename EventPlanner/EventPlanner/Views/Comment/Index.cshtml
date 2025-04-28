@@ -1,0 +1,31 @@
+﻿@model IEnumerable<EventPlanner.Models.Comment>
+
+<h2>Comments</h2>
+<a asp-action="Create" class="btn btn-primary">Create New Comment</a>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Content</th>
+      <th>Created At</th>
+      <th>Event ID</th>
+      <th>User ID</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var item in Model)
+    {
+      <tr>
+        <td>@item.Content</td>
+        <td>@item.CreatedAt</td>
+        <td>@item.EventId</td>
+        <td>@item.UserId</td>
+        <td>
+          <a asp-action="Details" asp-route-id="@item.CommentId" class="btn btn-info">View</a>
+          <a asp-action="Edit" asp-route-id="@item.CommentId" class="btn btn-warning">Edit</a>
+          <a asp-action="Delete" asp-route-id="@item.CommentId" class="btn btn-danger">Delete</a>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>

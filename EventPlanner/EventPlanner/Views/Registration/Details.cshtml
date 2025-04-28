@@ -1,0 +1,24 @@
+﻿@model EventPlanner.Models.Registration
+
+@{
+  ViewData["Title"] = "Registration Details";
+}
+
+<h2>Registration Details</h2>
+
+<dl class="row">
+  <dt class="col-sm-3">User</dt>
+  <dd class="col-sm-9">@Model.User?.UserName</dd>
+
+  <dt class="col-sm-3">Event</dt>
+  <dd class="col-sm-9">@Model.Event?.Title</dd>
+
+  <dt class="col-sm-3">Date</dt>
+  <dd class="col-sm-9">@Model.RegistrationDate.ToShortDateString()</dd>
+
+  <dt class="col-sm-3">Confirmed</dt>
+  <dd class="col-sm-9">@Model.IsConfirmed</dd>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.RegistrationId" class="btn btn-warning">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>
