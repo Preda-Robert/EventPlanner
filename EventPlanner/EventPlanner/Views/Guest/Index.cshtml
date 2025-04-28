@@ -1,0 +1,56 @@
+﻿@model IEnumerable<EventPlanner.ViewModels.GuestViewModel>
+
+@{
+  ViewData["Title"] = "Guests";
+}
+
+<h2>Guests</h2>
+@if (User.IsInRole("Admin"))
+{
+  <a asp-action="Create" class="btn btn-primary mb-3">Create New Guest</a>
+})
+
+<form asp-action="Index" method="get" class="mb-3">
+  <div class="row g-2 align-items-end">
+    <div class="col-auto">
+      <label class="form-label" for="eventId">Filter by Event:</label>
+
+      <select asp-items="ViewBag.Events" name="eventId" class="form-select">
+        <option value="">-- All Events --</option>
+      </select>
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+  </div>
+</form>
+
+
+<table class="table table-striped mt-3">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Role</th>
+      <th>Number of people</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var guest in Model)
+    {
+      <tr>
+        <td>@guest.Name</td>
+        <td>@guest.Role</td>
+        <td>@guest.Type</td> 
+        <td>
+          <a asp-action="Details" asp-route-id="@guest.GuestId" class="btn btn-info btn-sm">Details</a>
+          @if (User.IsInRole("Admin"))
+          {
+            <a asp-action="Edit" asp-route-id="@guest.GuestId" class="btn btn-warning btn-sm">Edit</a>
+            <a asp-action="Delete" asp-route-id="@guest.GuestId" class="btn btn-danger btn-sm">Delete</a>
+          })
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>

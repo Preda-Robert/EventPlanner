@@ -4,15 +4,15 @@ namespace EventPlanner.Models
 {
   public class Host
   {
+    [Key]
+
     public int HostId { get; set; }
 
-    [Required]
     public string Name { get; set; }
 
-    [EmailAddress]
-    public string Email { get; set; }
+    public string ContactInfo { get; set; }
 
-    public ICollection<Event>? Events { get; set; }
+    public virtual ICollection<Event>? EventsHosted { get; set; }
   }
 
 }

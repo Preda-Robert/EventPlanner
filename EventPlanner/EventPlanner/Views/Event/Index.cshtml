@@ -1,26 +1,71 @@
 ﻿@model IEnumerable<EventPlanner.Models.Event>
 
-<h2>Events</h2>
-<a asp-action="Create" class="btn btn-primary">Create New Event</a>
+@{
+  var currentSearch = Context.Request.Query["searchTerm"];
+  var currentSort = Context.Request.Query["sortOrder"];
+}
 
-<table class="table mt-3">
+<h2>Events</h2>
+
+@if (User.IsInRole("Admin"))
+{
+  <a asp-action="Create" class="btn btn-primary mb-3">Create New Event</a>
+}
+
+@if (TempData["Message"] != null)
+{
+  <div class="alert alert-info">@TempData["Message"]</div>
+}
+
+<form asp-action="Index" method="get" class="mb-3">
+  <div class="input-group">
+    <input type="text" name="searchTerm" value="@currentSearch" class="form-control" placeholder="Search by title..." />
+    <button type="submit" class="btn btn-outline-secondary">Search</button>
+  </div>
+</form>
+
+<table class="table table-striped">
   <thead>
     <tr>
-      <th>Title</th>
-      <th>Date</th>
-      <th>Description</th>
-      <th></th>
+      <th>
+        <a asp-action="Index" asp-route-sortOrder="@(currentSort == "title_asc" ? "title_desc" : "title_asc")" asp-route-searchTerm="@currentSearch">
+          Title
+        </a>
+      </th>
+      <th>
+        <a asp-action="Index" asp-route-sortOrder="@(currentSort == "date_asc" ? "date_desc" : "date_asc")" asp-route-searchTerm="@currentSearch">
+          Date
+        </a>
+      </th>
+      <th>Host</th>
+      <th>Location</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
-    @foreach (var ev in Model)
+    @foreach (var item in Model)
     {
       <tr>
-        <td>@ev.Title</td>
-        <td>@ev.Date.ToShortDateString()</td>
-        <td>@ev.Description</td>
+        <td>@item.Title</td>
+        <td>@item.Date.ToShortDateString()</td>
+        <td>@item.Host?.Name</td>
+        <td>@item.Location</td>
         <td>
-          <a asp-action="Details" asp-route-id="@ev.EventId" class="btn btn-sm btn-info">Details</a>
+          <a asp-action="Details" asp-route-id="@item.EventId" class="btn btn-info btn-sm">View</a>
+
+          <a asp-action="ViewGuests" asp-route-eventId="@item.EventId" class="btn btn-secondary btn-sm">View Guests</a>
+
+          @if (User.IsInRole("Admin"))
+          {
+            <a asp-action="Edit" asp-route-id="@item.EventId" class="btn btn-warning btn-sm">Edit</a>
+            <a asp-action="Delete" asp-route-id="@item.EventId" class="btn btn-danger btn-sm">Delete</a>
+          }
+          else if (User.Identity.IsAuthenticated)
+          {
+            <form asp-action="Register" asp-route-id="@item.EventId" method="post" class="d-inline">
+              <button type="submit" class="btn btn-success btn-sm">Register</button>
+            </form>
+          }
         </td>
       </tr>
     }

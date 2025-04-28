@@ -1,13 +1,12 @@
 ﻿using EventPlanner.Models;
-
 using EventPlanner.Repository.Interfaces;
 
 namespace EventPlanner.Repository
 {
-  public class HostRepository : Repository<Models.Host>, IHostRepository
+  public class HostRepository : Repository<EventPlanner.Models.Host>, IHostRepository
   {
-    private readonly AppDbContext _context;
-    public HostRepository(AppDbContext context) : base(context)
+    private readonly ApplicationDbContext _context;
+    public HostRepository(ApplicationDbContext context) : base(context)
     {
       _context = context;
     }

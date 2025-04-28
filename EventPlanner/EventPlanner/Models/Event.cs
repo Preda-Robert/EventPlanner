@@ -1,27 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EventPlanner.Models
+namespace EventPlanner.Models;
+public class Event
 {
-  public class Event
-  {
-    public int EventId { get; set; }
+  [Key]
 
-    [Required]
-    public string Title { get; set; }
+  public int EventId { get; set; }
 
-    public string Description { get; set; }
+  public string Title { get; set; }
 
-    public DateTime Date { get; set; }
+  public string Description { get; set; }
 
-    public string? Location { get; set; }
+  public DateTime Date { get; set; }
 
-    // Navigation properties
-    public int HostId { get; set; }
-    public Host? Host { get; set; }
+  public string Location { get; set; }
+  [ForeignKey("Host")]
+  public int HostId { get; set; }
+  public virtual Host? Host { get; set; }
 
-    public ICollection<Guest>? Guests { get; set; }
+  public virtual ICollection<EventGuest>? EventGuests { get; set; }
+  public virtual ICollection<Registration>? Registrations { get; set; }
 
-    public ICollection<Comment>? Comments { get; set; }
-  }
-
+  public virtual ICollection<Comment>? Comments { get; set; }
 }
