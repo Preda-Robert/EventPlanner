@@ -5,27 +5,27 @@ namespace EventPlanner.Repository
 {
   public class RepositoryWrapper : IRepositoryWrapper
   {
-    private readonly AppDbContext _context;
+    private readonly ApplicationDbContext _context;
+    public IRepository<Comment> Comment { get; private set; }
+    public IRepository<Event> Event { get; private set; }
+    public IRepository<EventGuest> EventGuest { get; private set; }
+    public IRepository<Guest> Guest { get; private set; }
+    public IRepository<Models.Host> Host { get; private set; }
+    public IRepository<Registration> Registration { get; private set; }
 
-    private IEventRepository _event;
-    private IRepository<Guest> _guest;
-    private IRepository<Models.Host> _host;
-    private IRepository<Comment> _comment;
-
-    public RepositoryWrapper(AppDbContext context)
+    public RepositoryWrapper(ApplicationDbContext context)
     {
       _context = context;
+      Comment = new Repository<Comment>(_context);
+      Event = new Repository<Event>(_context);
+      EventGuest = new Repository<EventGuest>(_context);
+      Guest = new Repository<Guest>(_context);
+      Host = new Repository<Models.Host>(_context);
+      Registration = new Repository<Registration>(_context);
     }
 
-    public IEventRepository Event => _event ??= new EventRepository(_context);
-    public IRepository<Guest> Guest => _guest ??= new Repository<Guest>(_context);
-    public IRepository<Models.Host> Host => _host ??= new Repository<Models.Host>(_context);
-    public IRepository<Comment> Comment => _comment ??= new Repository<Comment>(_context);
-
-    public async Task SaveAsync()
-    {
-      await _context.SaveChangesAsync();
-    }
+    public Task SaveAsync() => _context.SaveChangesAsync();
   }
+
 
 }

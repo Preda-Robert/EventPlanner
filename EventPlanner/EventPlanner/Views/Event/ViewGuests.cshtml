@@ -1,0 +1,28 @@
+﻿@model EventPlanner.Models.Event
+
+<h2>@Model.Title - Guests</h2>
+
+<div>
+  <h3>Event Details</h3>
+  <p><strong>Description:</strong> @Model.Description</p>
+  <p><strong>Date:</strong> @Model.Date.ToString("MMMM dd, yyyy")</p>
+  <p><strong>Location:</strong> @Model.Location</p>
+  <p><strong>Host:</strong> @Model.Host.Name</p>
+</div>
+
+<h3>Guests</h3>
+@if (Model.EventGuests != null && Model.EventGuests.Any())
+{
+  <ul>
+    @foreach (var eventGuest in Model.EventGuests)
+    {
+      <li>@eventGuest.Guest.Name</li>
+    }
+  </ul>
+}
+else
+{
+  <p>No guests have been added to this event yet.</p>
+}
+
+<a href="@Url.Action("Index", "Event")" class="btn btn-primary">Back to Events</a>

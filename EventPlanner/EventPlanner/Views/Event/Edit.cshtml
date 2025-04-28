@@ -1,8 +1,10 @@
 ﻿@model EventPlanner.Models.Event
-
 <h2>@ViewContext.RouteData.Values["action"] Event</h2>
 <form asp-action="@ViewContext.RouteData.Values["action"]" method="post">
-  
+  @if (Model.EventId != 0)
+  {
+    <input type="hidden" asp-for="EventId" />
+  }
   <div class="form-group">
     <label asp-for="Title"></label>
     <input asp-for="Title" class="form-control" />
@@ -24,17 +26,33 @@
     <select asp-for="HostId" asp-items="ViewBag.Hosts" class="form-control"></select>
   </div>
 
-
+  <!-- Guest selection section -->
   <div class="form-group">
-    <label for="Guests">Guests</label>
-    <div>
-      @foreach (var guest in ViewBag.Guests as List<EventPlanner.Models.Guest>)
+    <label>Guests</label>
+    <div class="guest-checkboxes">
+      @{
+        var guests = ViewBag.Guests as IEnumerable<EventPlanner.Models.Guest>;
+        var selectedGuestIds = ViewBag.SelectedGuestIds as IEnumerable<int>;
+      }
+
+      @if (guests != null)
       {
-        <div>
-          <input type="checkbox" name="SelectedGuests" value="@guest.GuestId" /> @guest.Name
-        </div>
+        foreach (var guest in guests)
+        {
+          bool isChecked = selectedGuestIds != null && selectedGuestIds.Contains(guest.GuestId);
+          <div class="form-check">
+            <input type="checkbox"
+                   name="selectedGuests"
+                   value="@guest.GuestId"
+                   id="guest_@guest.GuestId"
+                   class="form-check-input"
+            @(isChecked ? "checked" : "") />
+            <label class="form-check-label" for="guest_@guest.GuestId">@guest.Name</label>
+          </div>
+        }
       }
     </div>
   </div>
+
   <button type="submit" class="btn btn-success">Save</button>
 </form>

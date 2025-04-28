@@ -1,11 +1,43 @@
 ﻿@model EventPlanner.Models.Event
 
-<h2>Event Details</h2>
+<h2>@Model.Title</h2>
 
-<div>
-    <h4>@Model.Title</h4>
-    <p><strong>Date:</strong> @Model.Date.ToShortDateString()</p>
-    <p><strong>Description:</strong> @Model.Description</p>
-</div>
+<p><strong>Date:</strong> @Model.Date.ToShortDateString()</p>
+<p><strong>Location:</strong> @Model.Location</p>
+<p><strong>Host:</strong> @Model.Host?.Name</p>
 
-<a asp-action="Index" class="btn btn-secondary">Back to List</a>
+<hr />
+
+<h3>Comments</h3>
+
+@if (Model.Comments != null && Model.Comments.Any())
+{
+  <ul class="list-group mb-4">
+    @foreach (var comment in Model.Comments)
+    {
+      <li class="list-group-item">
+        <strong>@comment.User.UserName:</strong> @comment.Content
+        <br />
+        <small class="text-muted">@comment.CreatedAt.ToString("g")</small>
+      </li>
+    }
+  </ul>
+}
+else
+{
+  <p>No comments yet. Be the first!</p>
+}
+
+<hr />
+
+<h3>Add a Comment</h3>
+
+<form asp-controller="Comment" asp-action="Create" method="post">
+  <input type="hidden" name="EventId" value="@Model.EventId" />
+  <div class="form-group">
+    <label for="Content">Comment</label>
+    <textarea name="Content" class="form-control" rows="3" required></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
+</form>

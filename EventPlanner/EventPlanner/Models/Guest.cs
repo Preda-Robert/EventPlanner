@@ -2,22 +2,20 @@
 
 namespace EventPlanner.Models
 {
+
   public class Guest
   {
+    [Key]
+
     public int GuestId { get; set; }
 
-    [Required]
     public string Name { get; set; }
 
-    [EmailAddress]
-    public string Email { get; set; }
+    public string Role { get; set; }
 
-    // RSVP status (e.g. "Yes", "No", "Maybe")
-    public string RSVP { get; set; }
+    public int Type { get; set; }
 
-    // Navigation
-    public int EventId { get; set; }
-    public Event Event { get; set; }
+    public virtual ICollection<EventGuest> EventGuests { get; set; }
   }
 
 }
