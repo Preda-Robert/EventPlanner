@@ -1,6 +1,6 @@
 ﻿@model EventPlanner.Models.Event
 <h2>@ViewContext.RouteData.Values["action"] Event</h2>
-<form asp-action="@ViewContext.RouteData.Values["action"]" method="post">
+<form asp-action="@ViewContext.RouteData.Values["action"]" method="post" enctype="multipart/form-data">
   @if (Model.EventId != 0)
   {
     <input type="hidden" asp-for="EventId" />
@@ -53,6 +53,21 @@
       }
     </div>
   </div>
+  <div class="form-group">
+    <label>Current Image</label><br />
+    @if (!string.IsNullOrEmpty(Model.ImagePath))
+    {
+      <img src="@Model.ImagePath" class="img-thumbnail" style="max-height: 200px;" />
+    }
+    else
+    {
+      <p>No image uploaded.</p>
+    }
+  </div>
 
+  <div class="form-group">
+    <label>Change Image</label>
+    <input type="file" name="ImageFile" class="form-control" />
+  </div>
   <button type="submit" class="btn btn-success">Save</button>
 </form>

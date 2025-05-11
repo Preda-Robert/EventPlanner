@@ -12,12 +12,14 @@ public class EventController : Controller
   private readonly IRepositoryWrapper _repo;
   private readonly UserManager<ApplicationUser> _userManager;
   private readonly IEventService _eventService;
+  private readonly IWebHostEnvironment _env;
 
-  public EventController(IRepositoryWrapper repo, UserManager<ApplicationUser> userManager, IEventService eventService)
+  public EventController(IRepositoryWrapper repo, UserManager<ApplicationUser> userManager, IEventService eventService, IWebHostEnvironment env)
   {
     _repo = repo;
     _userManager = userManager;
     _eventService = eventService;
+    _env = env;
   }
 
   [HttpPost]
@@ -86,7 +88,7 @@ public class EventController : Controller
   public async Task<IActionResult> Create()
   {
     ViewBag.Hosts = new SelectList(await _repo.Host.GetAllAsync(), "HostId", "Name");
-    ViewBag.Guests = await _repo.Guest.GetAllAsync();  // Fetch the list of guests
+    ViewBag.Guests = await _repo.Guest.GetAllAsync();
     return View();
   }
   //[Authorize(Roles = "Admin")]
@@ -110,8 +112,23 @@ public class EventController : Controller
   [Authorize(Roles = "Admin")]
   [HttpPost]
   [ValidateAntiForgeryToken]
-  public async Task<IActionResult> Create(Event ev, int[] selectedGuests)
+  public async Task<IActionResult> Create(Event ev, int[] selectedGuests, IFormFile ImageFile)
   {
+    if (ImageFile != null && ImageFile.Length > 0)
+    {
+      var uploads = Path.Combine(_env.WebRootPath, "images/events");
+      Directory.CreateDirectory(uploads);
+      var fileName = Guid.NewGuid() + Path.GetExtension(ImageFile.FileName);
+      var filePath = Path.Combine(uploads, fileName);
+
+      using (var stream = new FileStream(filePath, FileMode.Create))
+      {
+        await ImageFile.CopyToAsync(stream);
+      }
+
+      ev.ImagePath = "/images/events/" + fileName;
+    }
+
     if (ModelState.IsValid)
     {
       await _repo.Event.AddAsync(ev);
@@ -134,7 +151,6 @@ public class EventController : Controller
       return RedirectToAction(nameof(Index));
     }
 
-    // Reload the hosts and guests if the form is invalid
     ViewBag.Hosts = new SelectList(await _repo.Host.GetAllAsync(), "HostId", "Name", ev.HostId);
     ViewBag.Guests = await _repo.Guest.GetAllAsync();
     return View(ev);
@@ -149,10 +165,8 @@ public class EventController : Controller
 
     if (ev == null) return NotFound();
 
-    // Get all guests
     var allGuests = await _repo.Guest.GetAllAsync();
 
-    // Get the IDs of guests already assigned to this event
     var selectedGuestIds = ev.EventGuests?.Select(eg => eg.GuestId).ToList() ?? new List<int>();
 
     ViewBag.Hosts = new SelectList(await _repo.Host.GetAllAsync(), "HostId", "Name", ev.HostId);
@@ -161,54 +175,69 @@ public class EventController : Controller
 
     return View(ev);
   }
-  [Authorize(Roles = "Admin")]
   [HttpPost]
+  [Authorize(Roles = "Admin")]
   [ValidateAntiForgeryToken]
-  public async Task<IActionResult> Edit(int id, Event ev, int[] selectedGuests)
+  public async Task<IActionResult> Edit(int id, Event ev, int[] selectedGuests, IFormFile ImageFile)
   {
     if (id != ev.EventId) return NotFound();
 
-    if (ModelState.IsValid)
+    var existingEvent = await _repo.Event.GetByIdAsync(e => e.EventId == id, include: q => q.Include(e => e.EventGuests));
+    if (existingEvent == null) return NotFound();
+
+    if (ImageFile != null && ImageFile.Length > 0)
     {
-      _repo.Event.Update(ev);
+      var uploads = Path.Combine(_env.WebRootPath, "images/events");
+      Directory.CreateDirectory(uploads);
+      var fileName = Guid.NewGuid() + Path.GetExtension(ImageFile.FileName);
+      var filePath = Path.Combine(uploads, fileName);
 
-      var existingEventGuests = (await _repo.EventGuest.GetAllAsync())
-          .Where(eg => eg.EventId == id)
-          .ToList();
-
-      foreach (var existingGuest in existingEventGuests)
+      using (var stream = new FileStream(filePath, FileMode.Create))
       {
-        if (selectedGuests == null || !selectedGuests.Contains(existingGuest.GuestId))
-        {
-          _repo.EventGuest.Delete(existingGuest);
-        }
+        await ImageFile.CopyToAsync(stream);
       }
 
-      if (selectedGuests != null)
+      // Optional: delete old image file from wwwroot
+      if (!string.IsNullOrEmpty(existingEvent.ImagePath))
       {
-        foreach (var guestId in selectedGuests)
-        {
-          if (!existingEventGuests.Any(eg => eg.GuestId == guestId))
-          {
-            var eventGuest = new EventGuest
-            {
-              EventId = ev.EventId,
-              GuestId = guestId
-            };
-            await _repo.EventGuest.AddAsync(eventGuest);
-          }
-        }
+        var oldPath = Path.Combine(_env.WebRootPath, existingEvent.ImagePath.TrimStart('/'));
+        if (System.IO.File.Exists(oldPath)) System.IO.File.Delete(oldPath);
       }
 
-      await _repo.SaveAsync();
-      return RedirectToAction(nameof(Index));
+      existingEvent.ImagePath = "/images/events/" + fileName;
     }
 
-    ViewBag.Hosts = new SelectList(await _repo.Host.GetAllAsync(), "HostId", "Name", ev.HostId);
-    ViewBag.Guests = await _repo.Guest.GetAllAsync();
-    ViewBag.SelectedGuestIds = selectedGuests ?? new int[0];
-    return View(ev);
+    // Update other fields
+    existingEvent.Title = ev.Title;
+    existingEvent.Description = ev.Description;
+    existingEvent.Date = ev.Date;
+    existingEvent.Location = ev.Location;
+    existingEvent.HostId = ev.HostId;
+
+    // Update guests
+    var existingGuests = existingEvent.EventGuests?.ToList() ?? new List<EventGuest>();
+    var newGuestIds = selectedGuests.ToHashSet();
+
+    foreach (var guest in existingGuests)
+    {
+      if (!newGuestIds.Contains(guest.GuestId))
+      {
+        _repo.EventGuest.Delete(guest);
+      }
+    }
+
+    foreach (var guestId in newGuestIds)
+    {
+      if (!existingGuests.Any(g => g.GuestId == guestId))
+      {
+        await _repo.EventGuest.AddAsync(new EventGuest { EventId = id, GuestId = guestId });
+      }
+    }
+
+    await _repo.SaveAsync();
+    return RedirectToAction(nameof(Index));
   }
+
   [Authorize(Roles = "Admin")]
   public async Task<IActionResult> Delete(int id)
   {

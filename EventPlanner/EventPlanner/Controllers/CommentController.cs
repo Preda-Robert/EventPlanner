@@ -91,6 +91,6 @@ public class CommentController : Controller
     if (comment == null) return NotFound();
     _repo.Comment.Delete(comment);
     await _repo.SaveAsync();
-    return RedirectToAction(nameof(Index));
+    return RedirectToAction("Details", "Event", new { id = comment.EventId });
   }
 }

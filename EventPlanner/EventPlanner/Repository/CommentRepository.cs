@@ -10,7 +10,6 @@ namespace EventPlanner.Repository
     {
       _context = context;
     }
-    // Add any additional methods specific to Comment repository here
   }
 
 }
