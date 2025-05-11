@@ -23,4 +23,6 @@ public class Event
   public virtual ICollection<Registration>? Registrations { get; set; }
 
   public virtual ICollection<Comment>? Comments { get; set; }
+
+  public string? ImagePath { get; set; }
 }

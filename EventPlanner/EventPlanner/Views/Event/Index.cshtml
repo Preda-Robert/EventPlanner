@@ -3,13 +3,16 @@
 @{
   var currentSearch = Context.Request.Query["searchTerm"];
   var currentSort = Context.Request.Query["sortOrder"];
+  ViewData["Title"] = "Events";
 }
 
-<h2>Events</h2>
+<h2 class="mb-4">Events</h2>
 
 @if (User.IsInRole("Admin"))
 {
-  <a asp-action="Create" class="btn btn-primary mb-3">Create New Event</a>
+  <a asp-action="Create" class="btn btn-primary mb-3">
+    <i class="bi bi-plus-circle"></i> Create New Event
+  </a>
 }
 
 @if (TempData["Message"] != null)
@@ -17,57 +20,53 @@
   <div class="alert alert-info">@TempData["Message"]</div>
 }
 
-<form asp-action="Index" method="get" class="mb-3">
+<form asp-action="Index" method="get" class="mb-4">
   <div class="input-group">
     <input type="text" name="searchTerm" value="@currentSearch" class="form-control" placeholder="Search by title..." />
     <button type="submit" class="btn btn-outline-secondary">Search</button>
   </div>
 </form>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>
-        <a asp-action="Index" asp-route-sortOrder="@(currentSort == "title_asc" ? "title_desc" : "title_asc")" asp-route-searchTerm="@currentSearch">
-          Title
-        </a>
-      </th>
-      <th>
-        <a asp-action="Index" asp-route-sortOrder="@(currentSort == "date_asc" ? "date_desc" : "date_asc")" asp-route-searchTerm="@currentSearch">
-          Date
-        </a>
-      </th>
-      <th>Host</th>
-      <th>Location</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    @foreach (var item in Model)
-    {
-      <tr>
-        <td>@item.Title</td>
-        <td>@item.Date.ToShortDateString()</td>
-        <td>@item.Host?.Name</td>
-        <td>@item.Location</td>
-        <td>
-          <a asp-action="Details" asp-route-id="@item.EventId" class="btn btn-info btn-sm">View</a>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+  @foreach (var item in Model)
+  {
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        <img src="@(!string.IsNullOrEmpty(item.ImagePath) ? item.ImagePath : "https://via.placeholder.com/600x200?text=" + item.Title)" class="card-img-top" alt="Event Image">
 
-          <a asp-action="ViewGuests" asp-route-eventId="@item.EventId" class="btn btn-secondary btn-sm">View Guests</a>
+        <div class="card-body">
+          <h5 class="card-title">@item.Title</h5>
+          <p class="card-text"><strong>Date:</strong> @item.Date.ToShortDateString()</p>
+          <p class="card-text"><strong>Location:</strong> @item.Location</p>
+          <p class="card-text"><strong>Host:</strong> @item.Host?.Name</p>
+        </div>
+        <div class="card-footer d-flex flex-wrap justify-content-between gap-1">
+          <a asp-action="Details" asp-route-id="@item.EventId" class="btn btn-info btn-sm">
+            <i class="bi bi-eye"></i> View
+          </a>
+          <a asp-action="ViewGuests" asp-route-eventId="@item.EventId" class="btn btn-secondary btn-sm">
+            <i class="bi bi-people"></i> Attendees
+          </a>
 
           @if (User.IsInRole("Admin"))
           {
-            <a asp-action="Edit" asp-route-id="@item.EventId" class="btn btn-warning btn-sm">Edit</a>
-            <a asp-action="Delete" asp-route-id="@item.EventId" class="btn btn-danger btn-sm">Delete</a>
+            <a asp-action="Edit" asp-route-id="@item.EventId" class="btn btn-warning btn-sm">
+              <i class="bi bi-pencil"></i> Edit
+            </a>
+            <a asp-action="Delete" asp-route-id="@item.EventId" class="btn btn-danger btn-sm">
+              <i class="bi bi-trash"></i> Delete
+            </a>
           }
           else if (User.Identity.IsAuthenticated)
           {
             <form asp-action="Register" asp-route-id="@item.EventId" method="post" class="d-inline">
-              <button type="submit" class="btn btn-success btn-sm">Register</button>
+              <button type="submit" class="btn btn-success btn-sm">
+                <i class="bi bi-check-circle"></i> Register
+              </button>
             </form>
           }
-        </td>
-      </tr>
-    }
-  </tbody>
-</table>
+        </div>
+      </div>
+    </div>
+  }
+</div>

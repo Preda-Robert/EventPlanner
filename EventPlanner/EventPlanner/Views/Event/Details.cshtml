@@ -15,12 +15,24 @@
   <ul class="list-group mb-4">
     @foreach (var comment in Model.Comments)
     {
-      <li class="list-group-item">
-        <strong>@comment.User.UserName:</strong> @comment.Content
-        <br />
-        <small class="text-muted">@comment.CreatedAt.ToString("g")</small>
-      </li>
+      <div class="comment">
+        <p>@comment.Content</p>
+        <p><small>By @comment.User?.UserName on @comment.CreatedAt.ToShortDateString()</small></p>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+          if (User.IsInRole("Admin") || comment.UserId.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+          )
+          {
+            <form asp-action="Delete" asp-controller="Comment" asp-route-id="@comment.CommentId" method="post" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              @Html.AntiForgeryToken()
+            </form>
+          }
+        }
+      </div>
     }
+
   </ul>
 }
 else
