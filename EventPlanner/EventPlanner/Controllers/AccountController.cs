@@ -1,4 +1,5 @@
-﻿using EventPlanner.Models;
+﻿using System.Web.Mvc;
+using EventPlanner.Models;
 using Microsoft.AspNetCore.Identity; // If you are using Identity
 using Microsoft.AspNetCore.Mvc;
 
