@@ -1,4 +1,6 @@
-﻿using EventPlannerLogic;
+﻿
+using EventPlanner.Models;
+using EventPlanner.Services.Interfaces;
 
 namespace EventPlanner.Services
 {

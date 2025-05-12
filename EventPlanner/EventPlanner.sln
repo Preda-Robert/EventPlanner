@@ -1,9 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35825.156 d17.13
+VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventPlanner", "EventPlanner\EventPlanner.csproj", "{43920F89-6995-4116-8F85-5EB7AB7B24F8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventPlanner.UI", "EventPlanner\EventPlanner.UI.csproj", "{43920F89-6995-4116-8F85-5EB7AB7B24F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventPlanner.AppLogic", "EventPlannerLogic\EventPlanner.AppLogic.csproj", "{BF42BC9B-2EA0-4C8B-B89C-D326CC95D7B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventPlanner.DataAccess.Abstractions", "EventPlanner.DataAcess.Abstractions\EventPlanner.DataAccess.Abstractions.csproj", "{EC17375A-AE36-491A-B4C3-187EA991317C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventPlanner.DataAccess.EF", "EventPlanner.DataAccess.EF\EventPlanner.DataAccess.EF.csproj", "{0805AA95-6DF3-490F-9370-B43701BAC3EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventPlanner.DataAccess.Model", "EventPlanner.DataAccess.Model\EventPlanner.DataAccess.Model.csproj", "{E119F83A-91A9-4C11-B3FE-B16A41C7EFFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +23,22 @@ Global
 		{43920F89-6995-4116-8F85-5EB7AB7B24F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43920F89-6995-4116-8F85-5EB7AB7B24F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43920F89-6995-4116-8F85-5EB7AB7B24F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF42BC9B-2EA0-4C8B-B89C-D326CC95D7B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF42BC9B-2EA0-4C8B-B89C-D326CC95D7B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF42BC9B-2EA0-4C8B-B89C-D326CC95D7B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF42BC9B-2EA0-4C8B-B89C-D326CC95D7B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC17375A-AE36-491A-B4C3-187EA991317C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC17375A-AE36-491A-B4C3-187EA991317C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC17375A-AE36-491A-B4C3-187EA991317C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC17375A-AE36-491A-B4C3-187EA991317C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0805AA95-6DF3-490F-9370-B43701BAC3EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0805AA95-6DF3-490F-9370-B43701BAC3EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0805AA95-6DF3-490F-9370-B43701BAC3EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0805AA95-6DF3-490F-9370-B43701BAC3EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E119F83A-91A9-4C11-B3FE-B16A41C7EFFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E119F83A-91A9-4C11-B3FE-B16A41C7EFFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E119F83A-91A9-4C11-B3FE-B16A41C7EFFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E119F83A-91A9-4C11-B3FE-B16A41C7EFFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

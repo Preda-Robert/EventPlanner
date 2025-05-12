@@ -3,7 +3,7 @@ using EventPlanner.Models;
 using Microsoft.AspNetCore.Identity; // If you are using Identity
 using Microsoft.AspNetCore.Mvc;
 
-public class AccountController : Controller
+public class AccountController : Microsoft.AspNetCore.Mvc.Controller
 {
   private readonly UserManager<ApplicationUser> _userManager;
   private readonly SignInManager<ApplicationUser> _signInManager;
@@ -21,7 +21,7 @@ public class AccountController : Controller
   }
 
   // POST: /Account/Register
-  [HttpPost]
+  [Microsoft.AspNetCore.Mvc.HttpPost]
   public async Task<IActionResult> Register(RegisterViewModel model)
   {
     if (ModelState.IsValid)
@@ -50,7 +50,7 @@ public class AccountController : Controller
   }
 
   // POST: /Account/Login
-  [HttpPost]
+  [Microsoft.AspNetCore.Mvc.HttpPost]
   public async Task<IActionResult> Login(LoginViewModel model)
   {
     if (ModelState.IsValid)
@@ -67,7 +67,7 @@ public class AccountController : Controller
     return View(model);
   }
 
-  [HttpPost]
+  [Microsoft.AspNetCore.Mvc.HttpPost]
   public async Task<IActionResult> Logout()
   {
     await _signInManager.SignOutAsync();

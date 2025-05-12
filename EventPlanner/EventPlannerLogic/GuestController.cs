@@ -1,11 +1,12 @@
 ﻿using EventPlanner.Enums;
 using EventPlanner.Models;
 using EventPlanner.Repository.Interfaces;
+using EventPlanner.ViewModels;
+
 //using EventPlanner.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-
 public class GuestController : Controller
 {
   private readonly IRepositoryWrapper _repo;
