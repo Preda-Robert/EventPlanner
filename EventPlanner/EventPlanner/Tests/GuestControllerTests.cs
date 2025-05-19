@@ -3,20 +3,42 @@ using EventPlanner.Models;
 using EventPlanner.Repository.Interfaces;
 using EventPlanner.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using Xunit;
 
-namespace EventPlanner.Tests
+namespace EventPlanner.Tests.Controllers
 {
   public class GuestControllerTests
   {
-    private readonly Mock<IRepositoryWrapper> _mockRepo;
+    private readonly Mock<IRepositoryWrapper> _mockRepoWrapper;
+    private readonly Mock<IRepository<Guest>> _mockGuestRepo;
+    private readonly Mock<IRepository<Event>> _mockEventRepo;
+    private readonly Mock<IRepository<EventGuest>> _mockEventGuestRepo;
     private readonly GuestController _controller;
 
     public GuestControllerTests()
     {
-      _mockRepo = new Mock<IRepositoryWrapper>();
-      _controller = new GuestController(_mockRepo.Object);
+      // Setup individual repositories
+      _mockRepoWrapper = new Mock<IRepositoryWrapper>();
+      _mockGuestRepo = new Mock<IRepository<Guest>>();
+      _mockEventRepo = new Mock<IRepository<Event>>();
+      _mockEventGuestRepo = new Mock<IRepository<EventGuest>>();
+
+      _mockRepoWrapper.Setup(r => r.Guest).Returns(_mockGuestRepo.Object);
+      _mockRepoWrapper.Setup(r => r.Event).Returns(_mockEventRepo.Object);
+      _mockRepoWrapper.Setup(r => r.EventGuest).Returns(_mockEventGuestRepo.Object);
+
+      _controller = new GuestController(_mockRepoWrapper.Object);
+
+      // Setup controller context
+      var httpContext = new DefaultHttpContext();
+      var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+      _controller.TempData = tempData;
+      _controller.ControllerContext = new ControllerContext()
+      {
+        HttpContext = httpContext
+      };
     }
 
     [Fact]
@@ -34,11 +56,8 @@ namespace EventPlanner.Tests
                 new Event { EventId = 1, Title = "Test Event" }
             };
 
-      _mockRepo.Setup(repo => repo.Guest.GetAllAsync())
-          .ReturnsAsync(guests);
-
-      _mockRepo.Setup(repo => repo.Event.GetAllAsync())
-          .ReturnsAsync(events);
+      _mockGuestRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(guests);
+      _mockEventRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(events);
 
       // Act
       var result = await _controller.Index(null);
@@ -53,12 +72,11 @@ namespace EventPlanner.Tests
     public async Task Index_WithEventId_ReturnsViewWithFilteredGuests()
     {
       // Arrange
-      var eventId = 1;
-
+      int eventId = 1;
       var guests = new List<Guest>
             {
-                new Guest { GuestId = 1, Name = "Guest 1", Role = "Speaker", Type = (int)GuestType.Single },
-                new Guest { GuestId = 2, Name = "Guest 2", Role = "Performer", Type = (int)GuestType.Multiple }
+                new Guest { GuestId = 1, Name = "Guest 1" },
+                new Guest { GuestId = 2, Name = "Guest 2" }
             };
 
       var eventGuests = new List<EventGuest>
@@ -68,17 +86,12 @@ namespace EventPlanner.Tests
 
       var events = new List<Event>
             {
-                new Event { EventId = eventId, Title = "Test Event" }
+                new Event { EventId = eventId, Title = "Event 1" }
             };
 
-      _mockRepo.Setup(repo => repo.Guest.GetAllAsync())
-          .ReturnsAsync(guests);
-
-      _mockRepo.Setup(repo => repo.EventGuest.GetAllAsync())
-          .ReturnsAsync(eventGuests);
-
-      _mockRepo.Setup(repo => repo.Event.GetAllAsync())
-          .ReturnsAsync(events);
+      _mockGuestRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(guests);
+      _mockEventGuestRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(eventGuests);
+      _mockEventRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(events);
 
       // Act
       var result = await _controller.Index(eventId);
@@ -91,47 +104,36 @@ namespace EventPlanner.Tests
     }
 
     [Fact]
-    public async Task Details_WithValidId_ReturnsViewWithGuest()
+    public async Task Details_ValidId_ReturnsViewWithGuest()
     {
       // Arrange
-      var guestId = 1;
-      var guest = new Guest { GuestId = guestId, Name = "Test Guest", Role = "Speaker", Type = (int)GuestType.Single };
-
-      _mockRepo.Setup(repo => repo.Guest.GetByIdAsync(guestId))
-          .ReturnsAsync(guest);
+      var guest = new Guest { GuestId = 1, Name = "Test Guest" };
+      _mockGuestRepo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(guest);
 
       // Act
-      var result = await _controller.Details(guestId);
+      var result = await _controller.Details(1);
 
       // Assert
       var viewResult = Assert.IsType<ViewResult>(result);
       var model = Assert.IsType<Guest>(viewResult.Model);
-      Assert.Equal(guestId, model.GuestId);
+      Assert.Equal(1, model.GuestId);
     }
 
     [Fact]
-    public async Task Details_WithInvalidId_ReturnsNotFound()
+    public async Task Details_InvalidId_ReturnsNotFound()
     {
-      // Arrange
-      var guestId = 999;
+      _mockGuestRepo.Setup(r => r.GetByIdAsync(999)).ReturnsAsync((Guest)null);
 
-      _mockRepo.Setup(repo => repo.Guest.GetByIdAsync(guestId))
-          .ReturnsAsync((Guest)null);
+      var result = await _controller.Details(999);
 
-      // Act
-      var result = await _controller.Details(guestId);
-
-      // Assert
       Assert.IsType<NotFoundResult>(result);
     }
 
     [Fact]
-    public void Create_ReturnsViewWithGuestCreateViewModel()
+    public void Create_GET_ReturnsViewWithViewModel()
     {
-      // Act
       var result = _controller.Create();
 
-      // Assert
       var viewResult = Assert.IsType<ViewResult>(result);
       var model = Assert.IsType<GuestCreateViewModel>(viewResult.Model);
       Assert.NotNull(model.GuestTypes);
@@ -139,7 +141,7 @@ namespace EventPlanner.Tests
     }
 
     [Fact]
-    public async Task Create_Post_WithValidModel_AddsGuestAndRedirectsToIndex()
+    public async Task Create_POST_ValidModel_AddsGuestAndRedirects()
     {
       // Arrange
       var viewModel = new GuestCreateViewModel
@@ -149,15 +151,17 @@ namespace EventPlanner.Tests
         Type = GuestType.Single
       };
 
+      _controller.ModelState.Clear();
+
       // Act
       var result = await _controller.Create(viewModel);
 
       // Assert
-      var redirectResult = Assert.IsType<RedirectToActionResult>(result);
-      Assert.Equal("Index", redirectResult.ActionName);
+      var redirect = Assert.IsType<RedirectToActionResult>(result);
+      Assert.Equal("Index", redirect.ActionName);
 
-      _mockRepo.Verify(repo => repo.Guest.AddAsync(It.IsAny<Guest>()), Times.Once);
-      _mockRepo.Verify(repo => repo.SaveAsync(), Times.Once);
+      _mockGuestRepo.Verify(r => r.AddAsync(It.IsAny<Guest>()), Times.Once);
+      _mockRepoWrapper.Verify(r => r.SaveAsync(), Times.Once);
     }
   }
 }
