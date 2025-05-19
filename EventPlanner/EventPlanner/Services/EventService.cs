@@ -5,6 +5,9 @@ namespace EventPlanner.Services
 {
   public class EventService : IEventService
   {
+
+
+
     public IQueryable<Event> SearchEvents(IQueryable<Event> events, string searchTerm)
     {
 
@@ -26,6 +29,7 @@ namespace EventPlanner.Services
         _ => events.OrderBy(e => e.Title)
       };
     }
+
 
   }
 }
