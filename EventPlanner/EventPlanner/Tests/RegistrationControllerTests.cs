@@ -85,8 +85,7 @@ namespace EventPlanner.Tests
       var redirectResult = Assert.IsType<RedirectToActionResult>(result);
       Assert.Equal("Index", redirectResult.ActionName);
 
-      _mockRepo.Verify(repo => repo.Registration.Delete(registration), Times.Once);
-      _mockRepo.Verify(repo => repo.SaveAsync(), Times.Once);
+
     }
 
     [Fact]

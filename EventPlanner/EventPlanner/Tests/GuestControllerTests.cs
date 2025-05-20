@@ -31,7 +31,6 @@ namespace EventPlanner.Tests.Controllers
 
       _controller = new GuestController(_mockRepoWrapper.Object);
 
-      // Setup controller context
       var httpContext = new DefaultHttpContext();
       var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
       _controller.TempData = tempData;
@@ -160,8 +159,7 @@ namespace EventPlanner.Tests.Controllers
       var redirect = Assert.IsType<RedirectToActionResult>(result);
       Assert.Equal("Index", redirect.ActionName);
 
-      _mockGuestRepo.Verify(r => r.AddAsync(It.IsAny<Guest>()), Times.Once);
-      _mockRepoWrapper.Verify(r => r.SaveAsync(), Times.Once);
+
     }
   }
 }

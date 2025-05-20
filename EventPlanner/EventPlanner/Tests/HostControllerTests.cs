@@ -88,26 +88,6 @@ namespace EventPlanner.Tests
       Assert.IsType<ViewResult>(result);
     }
 
-    //[Fact]
-    //public async Task Create_Post_WithValidModel_AddsHostAndRedirectsToIndex()
-    //{
-    //  // Arrange
-    //  var host = new EventPlanner.Models.Host
-    //  {
-    //    Name = "New Host",
-    //    EventsHosted = new List<EventPlanner.Models.Event>(),
-    //    ContactInfo = "newhost@example.com"
-    //  };
 
-    //  // Act
-    //  var result = await _controller.Create(host);
-
-    //  // Assert
-    //  var redirectResult = Assert.IsType<RedirectToActionResult>(result);
-    //  Assert.Equal("Index", redirectResult.ActionName);
-
-    //  _mockRepo.Verify(repo => repo.Host.AddAsync(host), Times.Once);
-    //  _mockRepo.Verify(repo => repo.SaveAsync(), Times.Once);
-    //}
   }
 }

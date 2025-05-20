@@ -35,7 +35,6 @@ namespace EventPlanner.Tests
           _mockEventService.Object,
           _mockWebHostEnvironment.Object);
 
-      // Setup for tempdata
       _controller.TempData = new TempDataDictionary(
           new DefaultHttpContext(),
           Mock.Of<ITempDataProvider>());

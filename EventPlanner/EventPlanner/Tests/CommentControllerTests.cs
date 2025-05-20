@@ -131,8 +131,7 @@ namespace EventPlanner.Tests.Controllers
       Assert.Equal("Event", redirectResult.ControllerName);
       Assert.Equal(eventId, redirectResult.RouteValues["id"]);
 
-      //_mockCommentRepo.Verify(repo => repo.AddAsync(It.IsAny<Comment>()), Times.Once);
-      //_mockRepo.Verify(repo => repo.SaveAsync(), Times.Once);
+
     }
 
     [Fact]
@@ -181,8 +180,7 @@ namespace EventPlanner.Tests.Controllers
       var redirectResult = Assert.IsType<RedirectToActionResult>(result);
       Assert.Equal("Index", redirectResult.ActionName);
 
-      //_mockCommentRepo.Verify(repo => repo.Update(It.IsAny<Comment>()), Times.Once);
-      //_mockRepo.Verify(repo => repo.SaveAsync(), Times.Once);
+
     }
 
     [Fact]
@@ -220,9 +218,6 @@ namespace EventPlanner.Tests.Controllers
       Assert.Equal("Event", redirectResult.ControllerName);
       Assert.Equal(eventId, redirectResult.RouteValues["id"]);
 
-      // Verify repository calls
-      //_mockCommentRepo.Verify(repo => repo.Delete(comment), Times.Once);
-      //_mockRepo.Verify(repo => repo.SaveAsync(), Times.Once);
     }
   }
 }
